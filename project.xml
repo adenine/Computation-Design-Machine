@@ -5,7 +5,8 @@
 	<app main="Main" path="Export" file="ComputationDesignMachine" />
 	
 	<source path="Source" />
-	
+	<source path="Test" />
+
 	<haxelib name="openfl" />
 	
 	<assets path="Assets" rename="assets" exclude="openfl.svg" />

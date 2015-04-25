@@ -1,9 +1,0 @@
-package test;
-
-class TestGridMaker extends haxe.unit.TestCase {
-	
-	public function testBasic() {
-		assetEquals("A", "A");
-	}
-
-}

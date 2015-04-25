@@ -12,4 +12,12 @@ class ShapeMaker
 	public function ShapeMaker():Void {
 		trace("Loaded Shapemaker");
 	}
+
+	public function new() {
+		
+	}
+
+	public function genNewShape() {
+
+	}
 }
