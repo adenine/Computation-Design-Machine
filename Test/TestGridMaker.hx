@@ -4,7 +4,7 @@ package;
 class TestGridMaker extends haxe.unit.TestCase {
 	
 	public function testBasic() {
-		var t = new GridMaker();
+		var t = new GridMaker(3,3);
 		assertEquals("A", "A");
 
 		// check to see that the right grid was made

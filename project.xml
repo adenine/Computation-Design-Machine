@@ -3,7 +3,7 @@
 	
 	<meta title="ComputationDesignMachine" package="com.sample.computationdesignmachine" version="1.0.0" company="Company Name" />
 	<app main="Main" path="Export" file="ComputationDesignMachine" />
-	
+	<window background="#FFFFFF" />
 	<source path="Source" />
 	<source path="Test" />
 
