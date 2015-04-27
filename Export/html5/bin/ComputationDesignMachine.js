@@ -1039,15 +1039,20 @@ $hxClasses["Main"] = Main;
 Main.__name__ = ["Main"];
 Main.__super__ = openfl.display.Sprite;
 Main.prototype = $extend(openfl.display.Sprite.prototype,{
-	onePiece: null
+	thisGrid: null
+	,onePiece: null
 	,setup: function() {
-		haxe.Log.trace("Creating a ShapeMaker",{ fileName : "Main.hx", lineNumber : 34, className : "Main", methodName : "setup"});
+		haxe.Log.trace("Creating a ShapeMaker",{ fileName : "Main.hx", lineNumber : 33, className : "Main", methodName : "setup"});
 		this.onePiece = new ShapeMaker(16,16);
 		this.onePiece.genNewShape();
 		this.addChild(this.onePiece);
+		this.thisGrid = new GridMaker(20,20);
+		this.thisGrid.set_x(100);
+		this.thisGrid.set_y(100);
+		this.addChild(this.thisGrid);
+		this.thisGrid.gridDraw();
 	}
 	,draw: function(e) {
-		this.onePiece.shapeDraw();
 	}
 	,__class__: Main
 });
@@ -1258,6 +1263,88 @@ EReg.prototype = {
 	}
 	,__class__: EReg
 };
+var GridMaker = function(_cG,_rG) {
+	openfl.display.Sprite.call(this);
+	this.colsInGrid = _cG;
+	this.rowsInGrid = _rG;
+	this.offSetX = 42;
+	this.offSetY = 42;
+	var _g = [];
+	var _g2 = 0;
+	var _g1 = this.colsInGrid;
+	while(_g2 < _g1) {
+		var x = _g2++;
+		_g.push((function($this) {
+			var $r;
+			var _g3 = [];
+			{
+				var _g5 = 0;
+				var _g4 = $this.rowsInGrid;
+				while(_g5 < _g4) {
+					var y = _g5++;
+					_g3.push(new ShapeMaker(16,16));
+				}
+			}
+			$r = _g3;
+			return $r;
+		}(this)));
+	}
+	this.gridOfShapes = _g;
+	haxe.Log.trace("Making a grid",{ fileName : "GridMaker.hx", lineNumber : 25, className : "GridMaker", methodName : "new"});
+	var _g21 = 0;
+	var _g11 = this.colsInGrid;
+	while(_g21 < _g11) {
+		var i = _g21++;
+		var _g41 = 0;
+		var _g31 = this.rowsInGrid;
+		while(_g41 < _g31) {
+			var j = _g41++;
+			this.gridOfShapes[i][j] = new ShapeMaker(16,16);
+			this.gridOfShapes[i][j].genNewShape();
+			haxe.Log.trace(this.gridOfShapes[i][j],{ fileName : "GridMaker.hx", lineNumber : 30, className : "GridMaker", methodName : "new"});
+			this.addChild(this.gridOfShapes[i][j]);
+		}
+	}
+	this.genNewGrid();
+};
+$hxClasses["GridMaker"] = GridMaker;
+GridMaker.__name__ = ["GridMaker"];
+GridMaker.__super__ = openfl.display.Sprite;
+GridMaker.prototype = $extend(openfl.display.Sprite.prototype,{
+	colsInGrid: null
+	,rowsInGrid: null
+	,offSetX: null
+	,offSetY: null
+	,thisShape: null
+	,gridOfShapes: null
+	,gridDraw: function() {
+		var _g1 = 0;
+		var _g = this.colsInGrid;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var _g3 = 0;
+			var _g2 = this.rowsInGrid;
+			while(_g3 < _g2) {
+				var j = _g3++;
+				this.gridOfShapes[i][j].shapeDraw(i * 20,j * 20);
+			}
+		}
+	}
+	,genNewGrid: function() {
+		var _g1 = 0;
+		var _g = this.colsInGrid;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var _g3 = 0;
+			var _g2 = this.rowsInGrid;
+			while(_g3 < _g2) {
+				var j = _g3++;
+				this.gridOfShapes[i][j].genNewShape();
+			}
+		}
+	}
+	,__class__: GridMaker
+});
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
 HxOverrides.__name__ = ["HxOverrides"];
@@ -1471,7 +1558,8 @@ var ShapeMaker = function(_pW,_pH) {
 		}(this)));
 	}
 	this.myPoints = _g;
-	haxe.Log.trace("New ShapeMaker Created",{ fileName : "ShapeMaker.hx", lineNumber : 24, className : "ShapeMaker", methodName : "new"});
+	haxe.Log.trace("New ShapeMaker Created",{ fileName : "ShapeMaker.hx", lineNumber : 29, className : "ShapeMaker", methodName : "new"});
+	this.myBitmapData = new openfl.display.BitmapData(this.pixelWidth,this.pixelHeight,false,16777215);
 };
 $hxClasses["ShapeMaker"] = ShapeMaker;
 ShapeMaker.__name__ = ["ShapeMaker"];
@@ -1480,13 +1568,17 @@ ShapeMaker.prototype = $extend(openfl.display.Sprite.prototype,{
 	pixelHeight: null
 	,pixelWidth: null
 	,myPoints: null
+	,myBitmapData: null
+	,getSize: function() {
+		return this.myPoints.length;
+	}
 	,getWidth: function() {
 		return this.pixelWidth;
 	}
 	,getHeight: function() {
 		return this.pixelHeight;
 	}
-	,shapeDraw: function() {
+	,shapeDraw: function(_xPos,_yPos) {
 		var _g1 = 0;
 		var _g = this.pixelWidth;
 		while(_g1 < _g) {
@@ -1496,9 +1588,12 @@ ShapeMaker.prototype = $extend(openfl.display.Sprite.prototype,{
 			while(_g3 < _g2) {
 				var j = _g3++;
 				if(this.myPoints[i][j] == 1) {
-					this.get_graphics().beginFill(3381555);
-					this.get_graphics().drawRect(i,j,1,1);
-					this.get_graphics().endFill();
+					var black = 0;
+					this.myBitmapData.setPixel(i,j,black);
+					var myBitmapImage = new openfl.display.Bitmap(this.myBitmapData);
+					myBitmapImage.set_x(_xPos);
+					myBitmapImage.set_y(_yPos);
+					this.addChild(myBitmapImage);
 				}
 			}
 		}
@@ -1516,17 +1611,23 @@ ShapeMaker.prototype = $extend(openfl.display.Sprite.prototype,{
 			}
 		}
 		var _g11 = 0;
-		var _g4 = this.pixelHeight;
+		var _g4 = this.pixelWidth / 2 | 0;
 		while(_g11 < _g4) {
 			var i1 = _g11++;
 			var _g31 = 0;
-			var _g21 = this.pixelWidth;
+			var _g21 = this.pixelHeight;
 			while(_g31 < _g21) {
 				var j1 = _g31++;
-				if(Math.random() > 0.7) this.myPoints[i1][j1] = 1; else this.myPoints[i1][j1] = 0;
+				if(Math.random() > 0.7) {
+					this.myPoints[i1][j1] = 1;
+					this.myPoints[this.pixelWidth - 1 - i1][j1] = 1;
+				} else {
+					this.myPoints[i1][j1] = 0;
+					this.myPoints[this.pixelWidth - 1 - i1][j1] = 0;
+				}
 			}
 		}
-		haxe.Log.trace("Setup a new Shape",{ fileName : "ShapeMaker.hx", lineNumber : 69, className : "ShapeMaker", methodName : "genNewShape"});
+		haxe.Log.trace("Setup a new Shape",{ fileName : "ShapeMaker.hx", lineNumber : 102, className : "ShapeMaker", methodName : "genNewShape"});
 	}
 	,__class__: ShapeMaker
 });
@@ -1638,7 +1739,11 @@ TestShapeMaker.__name__ = ["TestShapeMaker"];
 TestShapeMaker.__super__ = haxe.unit.TestCase;
 TestShapeMaker.prototype = $extend(haxe.unit.TestCase.prototype,{
 	testBasic: function() {
-		this.assertEquals("A","A",{ fileName : "TestShapeMaker.hx", lineNumber : 6, className : "TestShapeMaker", methodName : "testBasic"});
+		var t = new ShapeMaker(0,0);
+		this.assertEquals(t.getSize(),0,{ fileName : "TestShapeMaker.hx", lineNumber : 7, className : "TestShapeMaker", methodName : "testBasic"});
+		var t2 = new ShapeMaker(1,10);
+		this.assertEquals(t2.getWidth(),1,{ fileName : "TestShapeMaker.hx", lineNumber : 11, className : "TestShapeMaker", methodName : "testBasic"});
+		this.assertEquals(t2.getHeight(),10,{ fileName : "TestShapeMaker.hx", lineNumber : 12, className : "TestShapeMaker", methodName : "testBasic"});
 	}
 	,__class__: TestShapeMaker
 });

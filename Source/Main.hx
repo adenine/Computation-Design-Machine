@@ -35,13 +35,18 @@ class Main extends Sprite {
 		onePiece.genNewShape();
 		this.addChild(onePiece);
 
-		thisGrid = new GridMaker(3,3);
+		thisGrid = new GridMaker(20,20);
+		thisGrid.x = 100;
+		thisGrid.y = 100;
 		this.addChild(thisGrid);
+
+		thisGrid.gridDraw(); 
+ 		//onePiece.shapeDraw(0,0);
 	}
 
 	public function draw (e:Event) {
- 		thisGrid.gridDraw(); 
- 		onePiece.shapeDraw(0,0);
+ 		// thisGrid.gridDraw(); 
+ 		// onePiece.shapeDraw(0,0);
  		//trace("Drew the ShapeMaker");
 	}
 

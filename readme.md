@@ -5,6 +5,6 @@ This project is exploring using Haxe as a way to output generative art code to m
 To Do:
 - [ ] Create offsets for where the content is rendered
 - [ ] Create side panel for description
-- [ ] Move pixel code to draw bitmaps instead of rectangles
+- [*] Move pixel code to draw bitmaps instead of rectangles
 
 

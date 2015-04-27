@@ -3,6 +3,10 @@ package ;
 
 import openfl.display.Shape;
 import openfl.display.Sprite;
+import openfl.display.Bitmap;
+import openfl.display.BitmapData;
+import openfl.utils.ByteArray;
+import openfl.geom.Rectangle;
 
 class ShapeMaker extends Sprite
 {
@@ -14,6 +18,7 @@ class ShapeMaker extends Sprite
   // 	var int[][] myPoints = new int[pixelHeight][pixelWidth];
   // PGraphics pg;
   // boolean isSaved = false;
+  	private var myBitmapData:BitmapData;
 
 	public function new(_pW:Int, _pH:Int) {
 		super();
@@ -22,6 +27,8 @@ class ShapeMaker extends Sprite
 
 		myPoints = [for (x in 0...pixelWidth) [for (y in 0...pixelHeight) 0]];
 		trace("New ShapeMaker Created");
+
+		myBitmapData = new BitmapData(pixelWidth, pixelHeight, false, 0xFFFFFF);
 		
 	}
 
@@ -42,9 +49,21 @@ class ShapeMaker extends Sprite
   		for (i in 0...pixelWidth) {
      		for (j in 0...pixelHeight) {
          		if (myPoints[i][j] == 1) {
-    				this.graphics.beginFill(0x339933);
-    				this.graphics.drawRect(i+_xPos,j+_yPos,1,1);
-    				this.graphics.endFill();
+
+         			// DRAW WITH BITMAP
+
+         			//for (var i:uint = 0; i < 100; i++) { 
+    				var black = 0x000000; 
+    				myBitmapData.setPixel(i, j, black); 
+    				var myBitmapImage:Bitmap = new Bitmap(myBitmapData); 
+    				myBitmapImage.x = _xPos;
+    				myBitmapImage.y = _yPos;
+    				addChild(myBitmapImage);
+					//} 
+					// DRAW WITH SHAPES         			
+    				// this.graphics.beginFill(0x339933);
+    				// this.graphics.drawRect(i+_xPos,j+_yPos,1,1);
+    				// this.graphics.endFill();
          		}
      		}    
    		}
